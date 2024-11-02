@@ -1,5 +1,6 @@
 import os,sys
 from loguru import logger
+from Scripts.utils import *
 
 
 def init(version):
@@ -33,3 +34,5 @@ def init(version):
         colorize=False,
         encoding="utf-8",
     )
+
+

@@ -46,8 +46,17 @@ if __name__ == "__main__":
     else:
          charge_self=AutoCharge(None,None,None,True)
     logger.info("Starting...")
-    now = datetime.now()
-    while True:
+    mode=noneprompt.ListPrompt(
+         "请选择模式",
+         choices=[noneprompt.Choice(name=x)
+                  for x in ["定时充值","直接充值"]
+                  ],
+            ).prompt().name
+    if mode=="直接充值":    
+         AutoCharge.submit(charge_self)
+    else:
+      now = datetime.now()
+      while True:
        if now.weekday() != datetime.now().weekday():
           AutoCharge.get_Vtoken(charge_self)
           AutoCharge.save(charge_self)
