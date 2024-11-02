@@ -6,13 +6,17 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 
 class AutoCharge:
-    def __init__(self,cookies,money,password) -> None:
-        if cookies:
-         self.cookies=dict(item.split("=", 1) for item in cookies.split("; "))
+    def __init__(self,cookies,money,password,reload) -> None:
+        if reload:
+         self.load()
         else:
-         logger.error("cookies is empty")
-        self.money=money
-        self.password=password
+          if cookies:
+           self.cookies=dict(item.split("=", 1) for item in cookies.split("; "))
+          else:
+           logger.error("cookies is empty")
+          self.money=money
+          self.password=password
+        
 
     def get_YZM(self) :
         headers = {
@@ -43,6 +47,7 @@ class AutoCharge:
                  YZM=None
               self.YZM=YZM """
               YZM=response.text
+              if not YZM: continue
               self.YZM=YZM
               return YZM
         return None
@@ -77,6 +82,7 @@ class AutoCharge:
         if response.status_code==200: 
           logger.debug(response.text) 
           cookies_list = self.get_allcookies(response)
+          if len(cookies_list)<2: continue
           for cookie in cookies_list:
              new_cookie = cookie.split(';')[0]
              try:
@@ -223,6 +229,8 @@ class AutoCharge:
       data["areas"]=self.areas
       data["buildings"]=self.buildings
       data["rooms"]=self.rooms
+      data["money"]=self.money
+      data["password"]=self.password
       with open("data.json","w") as f:
           json.dump(data,f)              
 
@@ -236,9 +244,10 @@ class AutoCharge:
         self.studentNumber=data["studentNumber"]
         self.YZM=data["YZM"]
         self.vefication_token=data["vefication_token"]
+        self.money=data["money"]
+        self.password=data["password"]
     def get_Vtoken(self):
-       with open("data.json","r") as f:
-          datas=json.load(f)
+       
        headers = {
           'Host': 'yktdkcz.glut.edu.cn',
           'Sec-Fetch-Site': 'same-origin',
@@ -247,17 +256,17 @@ class AutoCharge:
           'Sec-Fetch-Mode': 'navigate',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.42(0x18002a32) NetType/WIFI Language/zh_CN',
-          'Referer': f"https://yktdkcz.glut.edu.cn/a/?Yzm={datas['YZM']}",
+          'Referer': f"https://yktdkcz.glut.edu.cn/a/?Yzm={self.YZM}",
           'Sec-Fetch-Dest': 'document',
           'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
                  }
        for i in range(5):
           
-          response = requests.get('https://yktdkcz.glut.edu.cn/a/RechargeAndQuery/Index',cookies=datas["cookies"], headers=headers) 
+          response = requests.get('https://yktdkcz.glut.edu.cn/a/RechargeAndQuery/Index',cookies=self.cookies, headers=headers) 
           if response.status_code==200:
               vefication_token=self.analyze_verfication_token(response.text)
               if vefication_token:
-                 datas["vefication_token"]=vefication_token
+                 
                  self.vefication_token=vefication_token
 
 
