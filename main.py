@@ -1,4 +1,5 @@
 import time,os
+from datetime import datetime
 from Scripts.utils import *
 from Scripts.init import *
 
@@ -45,9 +46,20 @@ if __name__ == "__main__":
     else:
          charge_self=AutoCharge(None,None,None,True)
     logger.info("Starting...")
-    
-    
-    AutoCharge.get_Vtoken(charge_self)
-    AutoCharge.submit(charge_self)
-    logger.info("Finished!")
-    time.sleep(10)
+    now = datetime.now()
+    while True:
+       if now.weekday() != datetime.now().weekday():
+          AutoCharge.get_Vtoken(charge_self)
+          AutoCharge.save(charge_self)
+          now = datetime.now()
+       if datetime.now().hour>1 and datetime.now().hour<22:
+            logger.info("未到时间，睡眠中...")
+            time.sleep(3600)
+            
+       else:
+          
+             if time():
+                     
+                 AutoCharge.submit(charge_self)
+                 logger.info("已充值，请留意是否来电")
+             time.sleep(33)
