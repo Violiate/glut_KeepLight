@@ -2,12 +2,14 @@ import time,os
 from datetime import datetime
 from Scripts.utils import *
 from Scripts.init import *
+from Scripts.time import *
 
 cookies=""
 money="0.01"
 version="1.0.0"
 password="123456"
 def load_config():
+       if not os.path.exists("data.json"): return False
        reload=noneprompt.ListPrompt(
               question="是否加载上次的配置？",
               choices=[noneprompt.Choice(name=x)
@@ -66,8 +68,9 @@ if __name__ == "__main__":
             time.sleep(3600)
             
        else:
-          
-             if time():
+             time_self=Time()
+             if Time.count(time_self):
+                
                      
                  AutoCharge.submit(charge_self)
                  logger.info("已充值，请留意是否来电")

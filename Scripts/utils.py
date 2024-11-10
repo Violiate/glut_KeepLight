@@ -63,6 +63,7 @@ class AutoCharge:
     
 
     def get_cookies(self,YZM):
+       if not YZM: logger.error("YZM获取失败！")
        url=f"https://yktdkcz.glut.edu.cn/a?Yzm={YZM}"
        headers = {
           'Host': 'yktdkcz.glut.edu.cn',
@@ -78,26 +79,31 @@ class AutoCharge:
           'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
            }
        for i in range(5):
-        response=requests.get(url,headers=headers,cookies=self.cookies)
-        if response.status_code==200: 
-          logger.debug(response.text) 
-          cookies_list = self.get_allcookies(response)
-          if len(cookies_list)<2: continue
-          for cookie in cookies_list:
-             new_cookie = cookie.split(';')[0]
-             try:
-              self.cookies.update({new_cookie.split('=')[0]:new_cookie.split('=')[1]})
-             except:
-                logger.debug(f"跳过无效cookie:{new_cookie}")
+        try:
+           response=requests.get(url,headers=headers,cookies=self.cookies)
+        
+           if response.status_code==200: 
+             #logger.debug(response.text) 
+             cookies_list = self.get_allcookies(response)
+             if len(cookies_list)<2: continue
+             for cookie in cookies_list:
+               new_cookie = cookie.split(';')[0]
+               try:
+                self.cookies.update({new_cookie.split('=')[0]:new_cookie.split('=')[1]})
+               except:
+                  logger.debug(f"跳过无效cookie:{new_cookie}")
           
-          verfication_token=self.analyze_verfication_token(response.text)
-          self.verfication_token=verfication_token
-          html=BeautifulSoup(response.text,"html.parser")
-          self.studentName=html.find("input",{"id":"StudentName"})
-          if self.studentName:
-             self.studentName=unquote(self.studentName.get("value"))
-          return self.cookies,self.verfication_token
-       return None
+             verfication_token=self.analyze_verfication_token(response.text)
+             self.verfication_token=verfication_token
+             html=BeautifulSoup(response.text,"html.parser")
+             self.studentName=html.find("input",{"id":"StudentName"})
+             if self.studentName:
+                self.studentName=unquote(self.studentName.get("value"))
+             return self.cookies,self.verfication_token
+        except requests.exceptions as e:
+             logger.error("请求错误，正在重试")
+             logger.error(e)
+        return None
     
     def choose_room(self):
        self.studentNumber=urllib.parse.unquote(self.cookies["1000142StudentNumber"])

@@ -1,7 +1,9 @@
 from datetime import datetime
 
 class Time:
-    def __init__(self):
+    def init(self):
+         pass
+    def count(self):
          if self.get_weekday() and self.is_workingday_time():
               return True
          elif not self.get_weekday() and self.is_holiday_time():
