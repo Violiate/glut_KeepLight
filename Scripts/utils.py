@@ -252,7 +252,7 @@ class AutoCharge:
         self.vefication_token=data["vefication_token"]
         self.money=data["money"]
         self.password=data["password"]
-    def get_Vtoken(self):
+    def get_Vtoken(self,YZM):
        
        headers = {
           'Host': 'yktdkcz.glut.edu.cn',
@@ -262,7 +262,7 @@ class AutoCharge:
           'Sec-Fetch-Mode': 'navigate',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2011K2C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
-          'Referer': f"https://yktdkcz.glut.edu.cn/a/?Yzm={self.YZM}",
+          'Referer': f"https://yktdkcz.glut.edu.cn/a/?Yzm={YZM}",
           'Sec-Fetch-Dest': 'document',
           'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
                  }
@@ -299,7 +299,7 @@ class AutoCharge:
           'roomCode': urllib.parse.unquote(self.room),
           'rechargeNumber': self.money,
           'studentNumber': urllib.parse.unquote(self.studentNumber),
-          '__RequestVerificationToken': self.vefication_token,
+          '__RequestVerificationToken': self.verfication_token,
           'password': self.password,
            }
 

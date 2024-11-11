@@ -17,16 +17,16 @@ class Time:
     
         # 定义要检查的时间点
         special_times = [
-        (23, 32),
-        (23, 37),
-        (23, 42),
-        (23, 47),
-        (0, 6),
-        (0, 16)
+        (23, 31,50),
+        (23, 36,50),
+        (23, 41,50),
+        (23, 46,50),
+        (0, 5,50),
+        (0, 15,50)
         ]
     
         # 获取当前时间的具体时、分、秒
-        current_time = (now.hour, now.minute)
+        current_time = (now.hour, now.minute,now.second)
     
         # 检查当前时间是否在特殊时间列表中
         if current_time in special_times:
@@ -41,13 +41,13 @@ class Time:
         # 定义要检查的时间点
         special_times = [
         
-        (0, 2),
-        (0, 6),
-        (0, 16)
+        (0, 1,50),
+        (0, 5,50),
+        (0, 15,50)
         ]
     
         # 获取当前时间的具体时、分、秒
-        current_time = (now.hour, now.minute)
+        current_time = (now.hour, now.minute,now.second)
     
         # 检查当前时间是否在特殊时间列表中
         if current_time in special_times:

@@ -1,4 +1,4 @@
-import time,os
+import time,os,pyperclip
 from datetime import datetime
 from Scripts.utils import *
 from Scripts.init import *
@@ -28,8 +28,14 @@ if __name__ == "__main__":
     if not load_config():
          logger.warning("请确保你的一卡通余额充足，否则可能会导致充值失败！")
          logger.warning("cookies通过抓包获得，在企业微信 A-校园一卡通里可随便抓到，格式为：Jgg-User=Jgg-User-oKJ_xxxxxxxxxxxxxxx; ASP.NET_SessionId=xxxxxxxxxxxxx")
+         try:
+                clip_value = pyperclip.paste()
+                logger.info("剪贴板复制成功")
+         except pyperclip.PyperclipException:
+                clip_value = ""
          cookies=noneprompt.InputPrompt(
-               question="请输入你的一卡通cookies"
+               question="请输入你的一卡通cookies",
+               default_text=clip_value,
 
             ).prompt()
          money=noneprompt.InputPrompt(
@@ -54,8 +60,12 @@ if __name__ == "__main__":
                   for x in ["定时充值","直接充值"]
                   ],
             ).prompt().name
-    if mode=="直接充值":    
-         AutoCharge.submit(charge_self)
+    if mode=="直接充值":  
+         if  charge_self.verfication_token:
+             AutoCharge.submit(charge_self)
+         else:
+             AutoCharge.get_Vtoken(charge_self,"")
+             AutoCharge.submit(charge_self)
     else:
       now = datetime.now()
       while True:
